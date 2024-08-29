@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Upcoming Events{% endblock %}
+{% block content %}
+<style>
+    body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 15px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.display-4 {
+    font-size: 2.7rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #343a40;
+}
+
+.lead {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 40px;
+}
+
+.event-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.event-row {
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    gap: 30px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.event-img {
+    overflow: hidden;
+    border-radius: 12px 0 0 12px; /* Round top-left and bottom-left corners */
+}
+
+.event-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.event-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.event-title {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.event-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.text-muted {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.btn {
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+</style>
+
+
+<div class="container">
+    <div class="text-center">
+        <h1 class="display-4">Upcoming Events</h1>
+        <p class="lead">Stay tuned and participate in our latest gaming events.</p>
+    </div>
+
+    {% if request.user.membership and request.user.membership.active %}
+        <p class="text-center text-success">As a {{ request.user.membership.tier.name }} member, you have exclusive access to premium content and events.</p>
+    {% endif %}
+
+    <div class="event-container">
+        {% for event in events %}
+            <div class="event-row">
+                <div class="event-img">
+                    {% if event.poster %}
+                        <img src="{{ event.poster.url }}" alt="{{ event.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x300" alt="Event Poster">
+                    {% endif %}
+                </div>
+                <div class="event-content">
+                    <h2 class="event-title">{{ event.name }}</h2>
+                    <p class="event-description">{{ event.description }}</p>
+                    <p class="text-muted"><strong>Start Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
+                    <p class="text-muted"><strong>Location:</strong> {{ event.location }}</p>
+                    <p class="text-muted"><strong>Organizer:</strong> {{ event.organizer }}</p>
+                    <p class="text-muted"><strong>Registration Fee:</strong> {{ event.registration_fee }}</p>
+                    <p class="text-muted"><strong>Prize:</strong> {{ event.prize }}</p>
+                    {% if user.is_authenticated %}
+                        {% if event.registration_fee > 0 %}
+                            <a href="{% url 'payment_page' event.id %}" class="btn btn-primary">Pay & Register</a>
+                        {% else %}
+                            <a href="{% url 'register_event' event.id %}" class="btn btn-primary">Register</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Login to Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
