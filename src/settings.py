@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n9^)*-s#otyt0kr)+vrv_=*8p#*#xfj&lob*$x@phn3^*smgh^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
         'localhost',
         '127.0.0.1',
-        '4559-41-212-14-223.ngrok-free.app',
+        'https://gamehavenhub.onrender.com',
     ]
 
 
